@@ -17,9 +17,10 @@ from Model import Model
 from Utilss import train
 from Utilss import valid
 
-characters = '-' + string.digits + string.ascii_uppercase
-width, height, n_len, n_classes = 192, 64, 4, len(characters)#192 64
-n_input_length = 12
+characters = string.digits + string.ascii_uppercase + string.ascii_lowercase
+# width, height, n_len, n_classes = 192, 64, 4, len(characters)#192 64
+width, height, n_len, n_classes = 150, 60, 4, len(characters)
+n_input_length = 9
 print(characters, width, height, n_len, n_classes)
 
 

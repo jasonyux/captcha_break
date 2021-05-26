@@ -1,0 +1,11 @@
+# IDE
+.vscode/
+
+# Environment
+venv
+
+# Data
+Winpy/data/
+
+# Others
+__pycache__
