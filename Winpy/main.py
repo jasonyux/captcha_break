@@ -95,8 +95,9 @@ if __name__=='__main__':
         output = model(image.unsqueeze(0).cuda())
         output_argmax = output.detach().permute(1, 0, 2).argmax(dim=-1)
         print('pred:', decode(output_argmax[0]))
+        break #don't know what this is for. It got me into infinite loop
     to_pil_image(image)
 
 
-    torch.save(model, 'ctc3.pth')
+    torch.save(model, 'ctc3_real.pth')
     

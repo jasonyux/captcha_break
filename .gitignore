@@ -6,6 +6,7 @@ venv
 
 # Data
 Winpy/data/
+Winpy/real
 
 # Others
 __pycache__

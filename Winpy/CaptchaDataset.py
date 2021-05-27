@@ -11,7 +11,7 @@ import numpy as np
 from collections import OrderedDict
 from PIL import Image
 
-IMAGE_DATA_DIR = "data"
+IMAGE_DATA_DIR = "real/labeled"
 FILE_LABEL_PATTERN = r'([0-9a-zA-Z]+)_([0-9]+)(\.png)'
 
 class CaptchaDataset(Dataset):
@@ -45,5 +45,8 @@ class CaptchaDataset(Dataset):
         file = random.choice(files)
         matchObj = re.match(FILE_LABEL_PATTERN, file)
         label = matchObj.group(1)
-        return label, Image.open(os.path.join(dir, file))
+        image = Image.open(os.path.join(dir, file))
+        if image.mode != 'RGB': # need 3 channel RGB
+	        image = image.convert('RGB')
+        return label, image
 
