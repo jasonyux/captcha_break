@@ -19,6 +19,8 @@ def decode(sequence):
 # to have the same return format as __getitem__
 def prepros_image(image_path):
     image = Image.open(image_path)
+    if image.mode != 'RGB': # need 3 channel RGB
+	    image = image.convert('RGB')
     image = to_tensor(image)
     target_length = torch.full(size=(1, ), fill_value=LABEL_LENGTH, dtype=torch.long)
     return image, None, None, target_length
@@ -39,10 +41,10 @@ if __name__ == "__main__":
     else:
         model = torch.load('ctc3.pth')
     model.eval()
-    dir_path = '/root/ZhihuScraper/captchas/labeled'
+    dir_path = 'real'
     dir = os.listdir(dir_path)
     random.shuffle(dir)
     for file in dir[:10]:
         img_path = os.path.join(dir_path, file)
         # predict_image(model, img_path)
-        predict_image(model, "/root/cnn_captcha/cage/images/a1U7_1751666314856572.png")
+        predict_image(model, img_path)
