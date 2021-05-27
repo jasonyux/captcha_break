@@ -5,6 +5,7 @@ from torchvision.transforms.functional import to_tensor
 
 LABEL_LENGTH = 4
 CHARACTERS = string.digits + string.ascii_uppercase + string.ascii_lowercase
+GPU_MODE = torch.cuda.is_available()
 
 def decode(sequence):
     a = ''.join([CHARACTERS[x] for x in sequence])
@@ -23,21 +24,25 @@ def prepros_image(image_path):
     return image, None, None, target_length
 
 def predict_image(model, image_path):
-    image, _, _, label_length = prepros_image(image_path)   
-    # print('true:', main.decode_target(target))
-
-    output = model(image.unsqueeze(0).cuda())
+    image, _, _, label_length = prepros_image(image_path)
+    if GPU_MODE==False:
+        output = model(image.unsqueeze(0))
+    else:
+        output = model(image.unsqueeze(0).cuda())    
     output_argmax = output.detach().permute(1, 0, 2).argmax(dim=-1)
     print('pred:', decode(output_argmax[0]))
     return
 
 if __name__ == "__main__":
-    model = torch.load('ctc3.pth')
+    if GPU_MODE==False:
+        model = torch.load('ctc3.pth', map_location=torch.device('cpu'))
+    else:
+        model = torch.load('ctc3.pth')
     model.eval()
-    dir_path = 'data'
+    dir_path = '/root/ZhihuScraper/captchas/labeled'
     dir = os.listdir(dir_path)
     random.shuffle(dir)
     for file in dir[:10]:
         img_path = os.path.join(dir_path, file)
         # predict_image(model, img_path)
-        predict_image(model, "/root/ZhihuScraper/captchas/labeled/3nBV_1622048517.png")
+        predict_image(model, "/root/cnn_captcha/cage/images/a1U7_1751666314856572.png")
