@@ -127,8 +127,8 @@ def train_when_new(new_num=100, dir=IMAGE_DATA_DIR, model_ckp_path='ctc3_test_ck
         diff = length - old_length
         if(diff < new_num):
             logging.info(f'only {diff} new files')
-            # checks every minute
-            time.sleep(60)
+            # checks every 30 min
+            time.sleep(1800)
             # up
             continue
         else:
