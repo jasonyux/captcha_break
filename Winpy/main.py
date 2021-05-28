@@ -17,36 +17,45 @@ from Model import Model
 from Utilss import train
 from Utilss import valid
 
-characters = string.digits + string.ascii_uppercase + string.ascii_lowercase
-# width, height, n_len, n_classes = 192, 64, 4, len(characters)#192 64
-width, height, n_len, n_classes = 150, 60, 4, len(characters)
-n_input_length = 9
-print(characters, width, height, n_len, n_classes)
+model = None
+characters = None
+image = None
+train_loader = None
+valid_loader = None
+dataset = None
+target = None
+
+def init():
+    global model, characters, image, target, train_loader, valid_loader, dataset
+    characters = string.digits + string.ascii_uppercase + string.ascii_lowercase
+    # width, height, n_len, n_classes = 192, 64, 4, len(characters)#192 64
+    width, height, n_len, n_classes = 150, 60, 4, len(characters)
+    n_input_length = 9
+    print(characters, width, height, n_len, n_classes)
 
 
-dataset = CaptchaDataset(characters, 1, width, height, n_input_length, n_len)
-image, target, input_length, label_length = dataset[0]
-print(''.join([characters[x] for x in target]), input_length, label_length)
-to_pil_image(image)
+    dataset = CaptchaDataset(characters, 1, width, height, n_input_length, n_len)
+    image, target, input_length, label_length = dataset[0]
+    print(''.join([characters[x] for x in target]), input_length, label_length)
+    to_pil_image(image)
+
+
+    batch_size = 70
+    train_set = CaptchaDataset(characters, 1000 * batch_size, width, height, n_input_length, n_len)
+    valid_set = CaptchaDataset(characters, 100 * batch_size, width, height, n_input_length, n_len)
+    train_loader = DataLoader(train_set, batch_size=batch_size, num_workers=2)
+    valid_loader = DataLoader(valid_set, batch_size=batch_size, num_workers=2)
 
 
 
-batch_size = 70
-train_set = CaptchaDataset(characters, 1000 * batch_size, width, height, n_input_length, n_len)
-valid_set = CaptchaDataset(characters, 100 * batch_size, width, height, n_input_length, n_len)
-train_loader = DataLoader(train_set, batch_size=batch_size, num_workers=2)
-valid_loader = DataLoader(valid_set, batch_size=batch_size, num_workers=2)
+    model = Model(n_classes, input_shape=(3, height, width))
+    inputs = torch.zeros((32, 3, height, width))
+    outputs = model(inputs)
+    print(outputs.shape)
 
-
-
-model = Model(n_classes, input_shape=(3, height, width))
-inputs = torch.zeros((32, 3, height, width))
-outputs = model(inputs)
-outputs.shape
-
-model = Model(n_classes, input_shape=(3, height, width))
-model = model.cuda()
-model
+    model = Model(n_classes, input_shape=(3, height, width))
+    model = model.cuda()
+    print(model)
 
 def decode(sequence):
     a = ''.join([characters[x] for x in sequence])
@@ -70,6 +79,8 @@ def calc_acc(target, output):
 
 
 if __name__=='__main__':
+    init()
+
     optimizer = torch.optim.Adam(model.parameters(), 1e-3, amsgrad=True)
     epochs = 6
     for epoch in range(1, epochs + 1):
@@ -99,5 +110,5 @@ if __name__=='__main__':
     to_pil_image(image)
 
 
-    torch.save(model, 'ctc3_real.pth')
+    torch.save(model, 'ctc3_test.pth')
     
