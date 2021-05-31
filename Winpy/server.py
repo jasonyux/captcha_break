@@ -8,7 +8,7 @@ from recognize import decode
 DOWNLOAD_PATH = "unlabeled"
 GPU_MODE = torch.cuda.is_available()
 LABEL_LENGTH = 4
-MODEL_PATH = 'ctc3_real.pth'
+MODEL_PATH = 'ctc3.pth'
 
 app = Flask(__name__)
 
